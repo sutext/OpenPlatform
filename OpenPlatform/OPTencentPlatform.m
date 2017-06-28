@@ -10,8 +10,10 @@
 #import "OPTencentPlatform.h"
 #import "OPOpenPlatform.h"
 #import "OPShareMedia.h"
+#import "OPAuthObject.h"
 @interface OPTencentPlatform()<TencentSessionDelegate>
 @property(nonatomic,copy)void (^shareComplete)(NSInteger);
+@property(nonatomic,copy)void (^authComplete)(NSInteger,OPAuthObject *);
 @property(nonatomic,strong)TencentOAuth * tencent;
 @end
 @implementation OPTencentPlatform
@@ -21,8 +23,45 @@
     self = [super init];
     if (self) {
         self.tencent = [[TencentOAuth alloc] initWithAppId:appid andDelegate:self];
+       
     }
     return self;
+}
+-(void)authCompleted:(void (^)(NSInteger, OPAuthObject *))completedBlock
+{
+    if (![QQApiInterface isQQInstalled]) {
+        if (completedBlock) {
+            completedBlock(OPPlatformErrorNotInstall,nil);
+        }
+        return;
+    }
+    if (![QQApiInterface isQQSupportApi]) {
+        if (completedBlock) {
+            completedBlock(OPPlatformErrorUnsuport,nil);
+        }
+        return;
+    }
+    NSArray* permissions = [NSArray arrayWithObjects:
+                            kOPEN_PERMISSION_GET_USER_INFO,
+                            kOPEN_PERMISSION_GET_SIMPLE_USER_INFO,
+                            kOPEN_PERMISSION_ADD_ALBUM,
+                            kOPEN_PERMISSION_ADD_ONE_BLOG,
+                            kOPEN_PERMISSION_ADD_SHARE,
+                            kOPEN_PERMISSION_ADD_TOPIC,
+                            kOPEN_PERMISSION_CHECK_PAGE_FANS,
+                            kOPEN_PERMISSION_GET_INFO,
+                            kOPEN_PERMISSION_GET_OTHER_INFO,
+                            kOPEN_PERMISSION_LIST_ALBUM,
+                            kOPEN_PERMISSION_UPLOAD_PIC,
+                            kOPEN_PERMISSION_GET_VIP_INFO,
+                            kOPEN_PERMISSION_GET_VIP_RICH_INFO,
+                            nil];
+    self.authComplete = completedBlock;
+    [self.tencent authorize:permissions];
+}
+-(BOOL)handleOpenURL:(NSURL *)url
+{
+    return [TencentOAuth HandleOpenURL:url];
 }
 -(void)shareWithMedia:(OPShareMedia *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
 {
@@ -127,28 +166,47 @@
     
 }
 #pragma mark QQ methods
-/**
- * 登录成功后的回调
- */
 - (void)tencentDidLogin
 {
-    [self.tencent getUserInfo];
+    if (self.tencent.accessToken && 0!= [self.tencent.accessToken length])
+        
+    {
+        if (self.authComplete) {
+            OPAuthObject *user = [[OPAuthObject alloc] init];
+            user.token = self.tencent.accessToken;
+            self.authComplete(OPPlatformErrorSucceed, user);
+            self.authComplete=nil;
+        }
+    }
+    else
+    {
+        if (self.authComplete) {
+            self.authComplete(OPPlatformErrorException, nil);
+        }
+        self.authComplete=nil;
+    }
 }
 
-/**
- * 登录失败后的回调
- * \param cancelled 代表用户是否主动退出登录
- */
 - (void)tencentDidNotLogin:(BOOL)cancelled
 {
+    if (self.authComplete) {
+        OPPlatformError error = OPPlatformErrorException;
+        if (cancelled) {
+            error = OPPlatformErrorCancel;
+        }
+        self.authComplete(error, nil);
+    }
+    self.authComplete=nil;
 }
 
-/**
- * 登录时网络有问题的回调
- */
 - (void)tencentDidNotNetWork
 {
+    if (self.authComplete) {
+        self.authComplete(OPPlatformErrorNetwork, nil);
+    }
+    self.authComplete=nil;
 }
+
 - (void)tencentOAuth:(TencentOAuth *)tencentOAuth doCloseViewController:(UIViewController *)viewController
 {
     

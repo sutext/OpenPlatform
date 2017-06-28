@@ -6,13 +6,14 @@
 //  Copyright © 2015年 icegent. All rights reserved.
 //
 
-#import <EasyTools/EasyTools.h>
+#import <CommonCrypto/CommonCrypto.h>
 #import "OPWeixinPayment.h"
 #import "OPPaymentOrder.h"
 @interface OPWeixinPayment()<NSXMLParserDelegate>
 @property(nonatomic,strong)OPPaymentOrder *payingOrder;
 @property(nonatomic,copy)void (^completedBlock)(BOOL, OPPaymentOrder *);
 @property(nonatomic,strong)NSString *prepayid;
+@property(nonatomic,strong)NSString *dynamicDomname;
 @end
 @implementation OPWeixinPayment
 -(void)payWithOrder:(OPPaymentOrder *)order completed:(void (^)(BOOL, OPPaymentOrder *))completedBlock
@@ -60,7 +61,7 @@
         }
     }
     [contentString appendFormat:@"key=%@", self.signkey];
-    NSString *md5Sign =[contentString ETMD5String];
+    NSString *md5Sign =[self md5:contentString];
     return md5Sign;
 }
 -(NSString *)genPackage:(NSMutableDictionary*)packageParams
@@ -106,7 +107,7 @@
     time_t now;
     time(&now);
     time_stamp  = [NSString stringWithFormat:@"%ld", now];
-    nonce_str	= [time_stamp ETMD5String];
+    nonce_str	= [self md5:time_stamp];
     package         = @"Sign=WXPay";
     NSMutableDictionary *signParams = [NSMutableDictionary dictionary];
     [signParams setObject: self.appid       forKey:@"appid"];
@@ -148,13 +149,22 @@ didStartElement:(NSString *)elementName
   qualifiedName:(NSString *)qName
      attributes:(NSDictionary *)attributeDict
 {
-    parser.runtimeObject =elementName;
+    self.dynamicDomname =elementName;
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string{
-    if ([parser.runtimeObject isEqualToString:@"prepay_id"]) {
+    if ([self.dynamicDomname isEqualToString:@"prepay_id"]) {
         self.prepayid=string;
         [parser abortParsing];
+        self.dynamicDomname=nil;
     }
 }
-
+-(NSString *)md5:(NSString *) string
+{
+    const char *str = [string UTF8String];
+    unsigned char r[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(str, (CC_LONG)strlen(str), r);
+    NSString *result = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                        r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
+    return [result uppercaseString];
+}
 @end

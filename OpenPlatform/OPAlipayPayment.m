@@ -9,7 +9,6 @@
 #import "OPAlipayPayment.h"
 #import "OPPaymentOrder.h"
 #import <AlipaySDK/AlipaySDK.h>
-#import <EasyTools/EasyTools.h>
 @interface OPAlipayPayment()
 @property(nonatomic,copy)void (^completedBlock)(BOOL, OPPaymentOrder *);
 @property(nonatomic,strong)OPPaymentOrder *payingOrder;

@@ -23,25 +23,25 @@ typedef NS_ENUM(NSUInteger, OPPlatformError) {
 
 typedef NS_ENUM(NSUInteger, OPOpenPaymentType) {
     OPOpenPaymentTypeAlipay,
-    OPOpenPaymentTypeWeixin,
+    OPOpenPaymentTypeWechat,
 };
 
 typedef NS_ENUM(NSUInteger, OPOpenShareType) {
     OPOpenShareTypeUnknown,
     OPOpenShareTypeQQ,
     OPOpenShareTypeQQZone,
-    OPOpenShareTypeWeixin,
+    OPOpenShareTypeWechat,
     OPOpenShareTypeMoments,
     OPOpenShareTypeWeibo,
 };
 
 typedef NS_ENUM(NSUInteger, OPOpenAuthType) {
-    OPOpenAuthTypeUnknown,
     OPOpenAuthTypeQQ,
-    OPOpenAuthTypeWeixin,
+    OPOpenAuthTypeWechat,
     OPOpenAuthTypeWeibo,
-    OPOpenAuthTypeAlipay,
 };
+
+NS_CLASS_AVAILABLE_IOS(8_0)
 @interface OPPlatformConfig:NSObject
 -(instancetype)initWithAppid:(nullable NSString *)appid appkey:(nullable NSString *)appkey schema:(nullable NSString *)schema;
 @property(nonatomic,strong,nullable)NSString *appid;//all
@@ -59,14 +59,16 @@ typedef NS_ENUM(NSUInteger, OPOpenAuthType) {
 @class OPShareMedia;
 @class OPAuthObject;
 
+NS_CLASS_AVAILABLE_IOS(8_0)
 @interface OPOpenPlatform : NSObject
 
--(void)setDebugEnable:(BOOL) enable;
--(void)configAlipay:(OPPlatformConfig *)alipayConfig;
--(void)configWeixin:(OPPlatformConfig *)weixinConfig;
--(void)configWeibo:(OPPlatformConfig *)weiboConfig;
--(void)configTencent:(OPPlatformConfig *)tencentConfig;
--(BOOL)handleOpenURL:(NSURL *)url;//you mast call this method in application:openURL:sourceApplication;
+-(void)setDebugEnable   :(BOOL) enable;
+-(void)configAlipay     :(OPPlatformConfig *)alipay;
+-(void)configWechat     :(OPPlatformConfig *)wechat;
+-(void)configWeibo      :(OPPlatformConfig *)weibo;
+-(void)configTencent    :(OPPlatformConfig *)tencent ;
+
+-(BOOL)handleOpenURL    :(NSURL *)url;//you mast call this method in application:openURL:sourceApplication;
 
 -(void)paymentWithType:(OPOpenPaymentType)payType
                  order:(OPPaymentOrder *)order
@@ -78,5 +80,6 @@ typedef NS_ENUM(NSUInteger, OPOpenAuthType) {
 
 -(void)authWithType:(OPOpenAuthType)authType
           completed:(nullable void (^)(OPPlatformError errorCode,OPAuthObject *auth)) completedBlock;
+
 @end
 NS_ASSUME_NONNULL_END

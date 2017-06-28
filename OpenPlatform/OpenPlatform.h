@@ -14,5 +14,4 @@
 #import <OpenPlatform/OPPaymentOrder.h>
 #import <OpenPlatform/OPShareMedia.h>
 #import <OpenPlatform/OPAuthObject.h>
-
 #endif

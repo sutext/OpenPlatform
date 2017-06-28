@@ -9,8 +9,10 @@
 #import "OPWeiboPlatform.h"
 #import "OPOpenPlatform.h"
 #import "OPShareMedia.h"
+#import "OPAuthObject.h"
 @interface OPWeiboPlatform()
 @property(nonatomic,copy)void (^shareComplete)(NSInteger);
+@property(nonatomic,copy)void (^authComplete)(NSInteger,OPAuthObject *);
 @end
 
 @implementation OPWeiboPlatform
@@ -43,10 +45,7 @@
     WBAuthorizeRequest *auth=[WBAuthorizeRequest request];
     auth.redirectURI=redirectURI;
     NSString *touken=nil;
-//    if (kNCUserEntity&&self.loginPlatform==NCOpenLoginPlatformSN) {
-//        touken=kNCUserEntity.tokenid;
-//    }
-//    
+
     WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message authInfo:auth access_token:touken];
     if ([WeiboSDK sendRequest:request]) {
         self.shareComplete=completedBlock;
@@ -57,7 +56,26 @@
             completedBlock(OPPlatformErrorException);
         }
     }
-
+}
+-(void)authCompleted:(void (^)(NSInteger, OPAuthObject *))completedBlock
+{
+    if (![WeiboSDK isWeiboAppInstalled]) {
+        if (completedBlock) {
+            completedBlock(OPPlatformErrorNotInstall,nil);
+        }
+        return;
+    }
+    if (![WeiboSDK isCanShareInWeiboAPP]) {
+        if (completedBlock) {
+            completedBlock(OPPlatformErrorUnsuport,nil);
+        }
+        return;
+    }
+    WBAuthorizeRequest *request = [WBAuthorizeRequest request];
+    request.redirectURI = self.redirectURI;
+    request.scope = @"all";
+    [WeiboSDK sendRequest:request];
+    self.authComplete=completedBlock;
 }
 - (void)request:(WBHttpRequest *)request didReceiveResponse:(NSURLResponse *)response
 {
@@ -65,10 +83,6 @@
 }
 - (void)request:(WBHttpRequest *)request didFailWithError:(NSError *)error
 {
-//    if (self.loginPlatform==NCOpenLoginPlatformSN&&self.loginComplete) {
-//        self.loginComplete(NCOpenLoginPlatformSN,nil,nil,NCOpenErrorTypeNetwork);
-//        self.loginComplete=nil;
-//    }
     
 }
 
@@ -79,40 +93,10 @@
 
 - (void)request:(WBHttpRequest *)request didFinishLoadingWithDataResult:(NSData *)data
 {
-//    NSError *error=nil;
-//    NSDictionary *dic= [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-//    if (!error&&[dic isKindOfClass:[NSDictionary class]]) {
-//        if (self.loginPlatform==NCOpenLoginPlatformSN&&self.loginComplete) {
-//            NSString *hearurl=[dic objectForKey:@"avatar_large"]; //profile_image_url,中图50*50,avatar_large大图180*180 ,avatar_hd 高清原图
-//            NSString *nickname=[dic objectForKey:@"screen_name"];
-//            NSDictionary *userdic=@{
-//                                    @"expires_in":[NSString stringWithFormat:@"%.0f",[self.sina.expirationDate timeIntervalSince1970]*1000],
-//                                    @"head":hearurl,
-//                                    @"nickname":nickname,
-//                                    @"access_token":self.sina.accessToken
-//                                    };
-//            self.loginComplete(NCOpenLoginPlatformSN,self.sina.userID,userdic,NCOpenErrorTypeSucceed);
-//            self.loginComplete=nil;
-//        }
-//    }
-//    else
-//    {
-//        if (self.loginPlatform==NCOpenLoginPlatformSN&&self.loginComplete) {
-//            self.loginComplete(NCOpenLoginPlatformSN,nil,nil,NCOpenErrorTypeUnknown);
-//            self.loginComplete=nil;
-//        }
-//    }
 }
 #pragma mark WeiboSDKDelegate methods
 -(void)getSinaUserInfo:(WBAuthorizeResponse *)response
 {
-//    self.sina=response;
-//    [WBHttpRequest requestWithAccessToken:response.accessToken
-//                                      url:@"https://api.weibo.com/2/users/show.json"
-//                               httpMethod:@"GET"
-//                                   params:@{@"uid":response.userID}
-//                                 delegate:self
-//                                  withTag:nil];
 }
 - (void)didReceiveWeiboRequest:(WBBaseRequest *)request
 {
@@ -120,36 +104,38 @@
 }
 - (void)didReceiveWeiboResponse:(WBBaseResponse *)response
 {
-//    if ([response isKindOfClass:[WBAuthorizeResponse class]])
-//    {
-//        WBAuthorizeResponse *authRespons=(WBAuthorizeResponse *)response;
-//        if (authRespons.statusCode==WeiboSDKResponseStatusCodeSuccess&&authRespons.accessToken.length) {
-//            [self getSinaUserInfo:authRespons];
-//        }
-//        else
-//        {
-//            if (self.loginPlatform==NCOpenLoginPlatformSN&&self.loginComplete) {
-//                NCOpenErrorType errorType=NCOpenErrorTypeUnknown;
-//                switch (authRespons.statusCode) {
-//                    case WeiboSDKResponseStatusCodeUserCancel:
-//                        errorType=NCOpenErrorTypeCancel;
-//                        break;
-//                    case WeiboSDKResponseStatusCodeSentFail:
-//                        errorType=NCOpenErrorTypeNetwork;
-//                        break;
-//                    case WeiboSDKResponseStatusCodeAuthDeny:
-//                        errorType=NCOpenErrorTypeRefuse;
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                self.loginComplete(NCOpenLoginPlatformSN,nil,nil,errorType);
-//                self.loginComplete=nil;
-//            }
-//        }
-//    }
-//    else
-    
+    if ([response isKindOfClass:[WBAuthorizeResponse class]])
+    {
+        WBAuthorizeResponse *authRespons=(WBAuthorizeResponse *)response;
+        if (authRespons.statusCode==WeiboSDKResponseStatusCodeSuccess&&authRespons.accessToken.length) {
+            if (self.authComplete) {
+                OPAuthObject *auth = [[OPAuthObject alloc] init];
+                auth.token = authRespons.accessToken;
+                self.authComplete(OPPlatformErrorSucceed,auth);
+                self.authComplete=nil;
+            }
+        }
+        else
+        {
+            if (self.authComplete) {
+                OPPlatformError errorType=OPPlatformErrorUnknown;
+                switch (authRespons.statusCode) {
+                    case WeiboSDKResponseStatusCodeUserCancel:
+                        errorType=OPPlatformErrorCancel;
+                        break;
+                    case WeiboSDKResponseStatusCodeSentFail:
+                        errorType=OPPlatformErrorNetwork;
+                        break;
+                    case WeiboSDKResponseStatusCodeAuthDeny:
+                        errorType=OPPlatformErrorRefuse;
+                        break;
+                    default:
+                        break;
+                }
+                self.authComplete(errorType, nil);
+            }
+        }
+    }
     if([response isKindOfClass:[WBSendMessageToWeiboResponse class]])
     {
         if (self.shareComplete) {

@@ -15,7 +15,11 @@
 #import "WeiboSDK.h"
 
 @class OPShareMedia;
+@class OPAuthObject;
 @interface OPWeiboPlatform : NSObject<WBHttpRequestDelegate,WeiboSDKDelegate>
+@property(nonatomic,strong)NSString *redirectURI;
+@property(nonatomic,strong)NSString *schema;
 -(void)shareWithMedia:(OPShareMedia *)media redirectURI:(NSString *)redirectURI completed:(void (^)(NSInteger errorCode)) completedBlock;
+-(void)authCompleted:(void (^)(NSInteger errorCode,OPAuthObject *auth)) completedBlock;
 @end
 #endif

@@ -11,9 +11,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OPAuthObject : NSObject
 @property(nonatomic,strong,nullable)NSString *openid;
 @property(nonatomic,strong,nullable)NSString *unionid;
-@property(nonatomic,strong,nullable)NSString *tokenid;
 @property(nonatomic,strong,nullable)NSString *nickname;
 @property(nonatomic,strong,nullable)NSString *avatar;
 @property(nonatomic,strong,nullable)NSString *gender;
+@property(nonatomic,strong,nullable)NSString *token;
 @end
 NS_ASSUME_NONNULL_END
