@@ -2,16 +2,22 @@
 //  OpenPlatform.h
 //  OpenPlatform
 //
-//  Created by supertext on 15/10/6.
-//  Copyright © 2015年 icegent. All rights reserved.
+//  Created by supertext on 2017/9/19.
+//  Copyright © 2017年 icegent. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 
-#ifndef OpenPlatform_OpenPlatform_h
-#define OpenPlatform_OpenPlatform_h
+//! Project version number for OpenPlatform.
+FOUNDATION_EXPORT double OpenPlatformVersionNumber;
 
-#import <OpenPlatform/OPOpenPlatform.h>
-#import <OpenPlatform/OPPaymentOrder.h>
-#import <OpenPlatform/OPShareMedia.h>
+//! Project version string for OpenPlatform.
+FOUNDATION_EXPORT const unsigned char OpenPlatformVersionString[];
+
+// In this header, you should import all the public headers of your framework using statements like #import <OpenPlatform/PublicHeader.h>
+
+
 #import <OpenPlatform/OPAuthObject.h>
-#endif
+#import <OpenPlatform/OPShareMedia.h>
+#import <OpenPlatform/OPPaymentOrder.h>
+#import <OpenPlatform/OPOpenPlatform.h>

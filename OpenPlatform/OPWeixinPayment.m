@@ -34,7 +34,7 @@
     if (!req) {
         if (completedBlock) {
             completedBlock(NO,order);
-            completedBlock=nil;
+            self.completedBlock=nil;
         }
     }
     else
