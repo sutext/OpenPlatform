@@ -181,8 +181,7 @@
             break;
     }
 }
-
--(void)shareWithType:(OPOpenShareType)shareType media:(OPShareMedia *)media completed:(void (^)(OPPlatformError,OPOpenShareType,OPShareMedia *))completedBlock
+-(void)shareWithType:(OPOpenShareType)shareType media:(id<OPShareObject>)media completed:(void (^)(OPPlatformError, OPOpenShareType, id<OPShareObject> _Nonnull))completedBlock
 {
     switch (shareType) {
         case OPOpenShareTypeQQ:
@@ -275,6 +274,18 @@
             
             break;
 #endif
+        default:
+            break;
+    }
+}
+-(NSString *)installURLWithType:(OPOpenAuthType)type{
+    switch (type) {
+        case OPOpenAuthTypeQQ:
+            return self.qqplatform.installURL;
+        case OPOpenAuthTypeWeibo:
+            return self.wbplatform.installURL;
+        case OPOpenAuthTypeWechat:
+            return self.wxplatform.installURL;
         default:
             break;
     }

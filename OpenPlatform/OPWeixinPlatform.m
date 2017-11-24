@@ -35,7 +35,7 @@
     req.state = @"123";
     [WXApi sendReq:req];
 }
--(void)shareWithMedia:(OPShareMedia *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
+-(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
 {
     if (![WXApi isWXAppInstalled]) {
         if (completedBlock) {
@@ -52,12 +52,21 @@
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = media.title;
     message.description = media.content;
-    message.thumbData=UIImageJPEGRepresentation(media.image, 0.1);
-    WXWebpageObject *ext = [WXWebpageObject object];
-    ext.webpageUrl = media.linkURL;
-    
-    message.mediaObject = ext;
-    
+    message.thumbData=UIImageJPEGRepresentation(media.image, 1);
+    if ([media isKindOfClass:[OPShareWebpage class]]){
+        WXWebpageObject *webpage = [WXWebpageObject object];
+        webpage.webpageUrl = ((OPShareWebpage *)media).weburl;
+        message.mediaObject = webpage;
+        message.mediaObject = webpage;
+    }else if([media isKindOfClass:[OPShareMusic class]]) {
+        WXMusicObject *music = [WXMusicObject object];
+        OPShareMusic *share = (OPShareMusic *)media;
+        music.musicUrl = share.webURL;
+        music.musicDataUrl = share.dataURL;
+        music.musicLowBandUrl = share.lowbandURL;
+        music.musicLowBandDataUrl = share.lowbandDataURL;
+        message.mediaObject = music;
+    }
     SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
     req.bText = NO;
     req.message = message;
@@ -73,6 +82,9 @@
         }
     }
 
+}
+-(NSString *)installURL{
+    return WXApi.getWXAppInstallUrl;
 }
 #pragma mark - WXApiDelegate
 - (void)onReq:(BaseReq *)req

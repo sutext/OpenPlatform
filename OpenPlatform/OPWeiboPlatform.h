@@ -14,12 +14,15 @@
 #import <ImageIO/ImageIO.h>
 #import "WeiboSDK.h"
 
-@class OPShareMedia;
+@protocol OPShareObject;
 @class OPAuthObject;
+NS_ASSUME_NONNULL_BEGIN
 @interface OPWeiboPlatform : NSObject<WBHttpRequestDelegate,WeiboSDKDelegate>
 @property(nonatomic,strong)NSString *redirectURI;
 @property(nonatomic,strong)NSString *schema;
--(void)shareWithMedia:(OPShareMedia *)media redirectURI:(NSString *)redirectURI completed:(void (^)(NSInteger errorCode)) completedBlock;
+@property(strong,nullable,readonly)NSString * installURL;
+-(void)shareWithMedia:(id<OPShareObject>)media redirectURI:(NSString *)redirectURI completed:(void (^)(NSInteger errorCode)) completedBlock;
 -(void)authCompleted:(void (^)(NSInteger errorCode,OPAuthObject *auth)) completedBlock;
 @end
+NS_ASSUME_NONNULL_END
 #endif

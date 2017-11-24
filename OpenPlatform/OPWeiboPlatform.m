@@ -17,7 +17,7 @@
 
 @implementation OPWeiboPlatform
 #pragma mark WBHttpRequestDelegate methods
--(void)shareWithMedia:(OPShareMedia *)media redirectURI:(NSString *)redirectURI completed:(void (^)(NSInteger))completedBlock
+-(void)shareWithMedia:(id<OPShareObject>)media redirectURI:(NSString *)redirectURI completed:(void (^)(NSInteger))completedBlock
 {
     if (![WeiboSDK isWeiboAppInstalled]) {
         if (completedBlock) {
@@ -31,22 +31,46 @@
         }
         return;
     }
-    WBMessageObject *message=[WBMessageObject message];
-    message.text=media.title;
-    
-    WBWebpageObject *webpage = [WBWebpageObject object];
-    webpage.objectID = @"identifier1";
-    webpage.title = media.title;
-    webpage.description = media.content;
-    webpage.thumbnailData = UIImageJPEGRepresentation(media.image, 0.1);
-    webpage.webpageUrl = media.linkURL;
-    message.mediaObject = webpage;
+//    WBMessageObject *message=[WBMessageObject message];
+//    if ([media isKindOfClass:[OPShareWebpage class]]){
+//        WBWebpageObject *webpage = [WBWebpageObject object];
+//        OPShareWebpage *share = (OPShareWebpage *)media;
+//        webpage.objectID = @"objectID";
+//        webpage.title = media.title;
+//        webpage.description = media.content;
+//        webpage.thumbnailData = UIImageJPEGRepresentation(media.image, 0.9);
+//        webpage.webpageUrl = share.weburl;
+//        message.mediaObject = webpage;
+//    }else if([media isKindOfClass:[OPShareMusic class]]) {
+//        WBMusicObject *music = [WBMusicObject object];
+//        OPShareMusic *share = (OPShareMusic *)media;
+//        music.objectID = @"OPShareWebpage";
+//        music.title = share.title;
+//        music.description = share.title;
+//        music.thumbnailData = UIImageJPEGRepresentation(media.image, 0.9);
+//        music.musicUrl = share.webURL;
+//        music.musicStreamUrl = share.dataURL;
+//        music.musicLowBandUrl = share.lowbandURL;
+//        music.musicLowBandStreamUrl = share.lowbandDataURL;
+//        music.scheme = @"karaok";
+//        message.mediaObject = music;
+//    }
+    WBMessageObject *message = [WBMessageObject message];
+    message.text = media.content;
+    if ([media isKindOfClass:[OPShareWebpage class]]) {
+        WBWebpageObject *webpage = [WBWebpageObject object];
+        OPShareWebpage * share = (OPShareWebpage *)media;
+        webpage.objectID = @"identifier1";
+        webpage.title = share.title;
+        webpage.description = share.content;
+        webpage.thumbnailData = UIImageJPEGRepresentation(share.image, 0.9);
+        webpage.webpageUrl = share.weburl;
+        message.mediaObject = webpage;
+    }
     
     WBAuthorizeRequest *auth=[WBAuthorizeRequest request];
     auth.redirectURI=redirectURI;
-    NSString *touken=nil;
-
-    WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message authInfo:auth access_token:touken];
+    WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message];
     if ([WeiboSDK sendRequest:request]) {
         self.shareComplete=completedBlock;
     }
@@ -76,6 +100,9 @@
     request.scope = @"all";
     [WeiboSDK sendRequest:request];
     self.authComplete=completedBlock;
+}
+-(NSString *)installURL{
+    return WeiboSDK.getWeiboAppInstallUrl;
 }
 - (void)request:(WBHttpRequest *)request didReceiveResponse:(NSURLResponse *)response
 {

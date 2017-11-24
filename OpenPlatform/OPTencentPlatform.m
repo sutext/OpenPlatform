@@ -59,11 +59,14 @@
     self.authComplete = completedBlock;
     [self.tencent authorize:permissions];
 }
+-(NSString *)installURL{
+    return QQApiInterface.getQQInstallUrl;
+}
 -(BOOL)handleOpenURL:(NSURL *)url
 {
     return [TencentOAuth HandleOpenURL:url];
 }
--(void)shareWithMedia:(OPShareMedia *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
+-(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
 {
     if (![QQApiInterface isQQInstalled]) {
         if (completedBlock) {
@@ -77,19 +80,35 @@
         }
         return;
     }
-    QQApiURLObject *urlobj=[[QQApiURLObject alloc] initWithURL:[NSURL URLWithString:media.linkURL]
-                                                         title:media.title
-                                                   description:media.content
-                                              previewImageData:UIImageJPEGRepresentation(media.image, 0.1)
-                                             targetContentType:QQApiURLTargetTypeNews];
+    QQApiObject * object;
+    if ([media isKindOfClass:[OPShareWebpage class]]){
+        OPShareWebpage *share = (OPShareWebpage *)media;
+        QQApiURLObject *urlobj=[[QQApiURLObject alloc]
+                                initWithURL:[NSURL URLWithString:share.weburl]
+                                title:media.title
+                                description:media.content
+                                previewImageData:UIImageJPEGRepresentation(media.image, 1)
+                                targetContentType:QQApiURLTargetTypeNews];
+        object = urlobj;
+    }else if([media isKindOfClass:[OPShareMusic class]]) {
+        OPShareMusic *share = (OPShareMusic *)media;
+        QQApiAudioObject *music=[[QQApiAudioObject alloc]
+                                initWithURL:[NSURL URLWithString:share.webURL]
+                                title:media.title
+                                description:media.content
+                                previewImageData:UIImageJPEGRepresentation(media.image, 1)
+                                targetContentType:QQApiURLTargetTypeAudio];
+        music.flashURL = [NSURL URLWithString:share.dataURL];
+        object = music;
+    }
     
     QQApiSendResultCode code=0;
     if (isChart) {
-        code= [QQApiInterface sendReq:[SendMessageToQQReq reqWithContent:urlobj]];
+        code= [QQApiInterface sendReq:[SendMessageToQQReq reqWithContent:object]];
     }
     else
     {
-        code=[QQApiInterface SendReqToQZone:[SendMessageToQQReq reqWithContent:urlobj]];
+        code=[QQApiInterface SendReqToQZone:[SendMessageToQQReq reqWithContent:object]];
     }
     if (code==EQQAPIAPPSHAREASYNC||code==EQQAPISENDSUCESS) {
         self.shareComplete=completedBlock;

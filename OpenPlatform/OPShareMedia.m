@@ -10,6 +10,9 @@
 
 
 
-@implementation OPShareMedia
+@implementation OPShareWebpage
+
+@end
+@implementation OPShareMusic
 
 @end

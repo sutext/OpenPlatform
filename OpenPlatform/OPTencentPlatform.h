@@ -9,12 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <TencentOpenAPI/QQApiInterface.h>
 #import <CoreTelephony/CoreTelephonyDefines.h>
-@class OPShareMedia;
+@protocol OPShareObject;
 @class OPAuthObject;
+NS_ASSUME_NONNULL_BEGIN
 @interface OPTencentPlatform : NSObject<QQApiInterfaceDelegate>
 -(instancetype)initWithAppid:(NSString *)appid;
 @property(nonatomic,strong)NSString *schema;
+@property(strong,nullable,readonly)NSString * installURL;
 -(BOOL)handleOpenURL:(NSURL *)url;
 -(void)authCompleted:(void (^)(NSInteger errorCode,OPAuthObject *auth)) completedBlock;
--(void)shareWithMedia:(OPShareMedia *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger errorCode)) completedBlock;
+-(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger errorCode)) completedBlock;
 @end
+NS_ASSUME_NONNULL_END

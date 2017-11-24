@@ -76,9 +76,7 @@
 		3375F9CB1F70BE2A0033AA56 /* OpenPlatform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenPlatform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3398D7891C6203D000F8FDA8 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		33AA20741EEEA09E0077D570 /* libWeiboSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeiboSDK.a; sourceTree = "<group>"; };
-		33AA20751EEEA09E0077D570 /* WBHttpRequest+WeiboToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WBHttpRequest+WeiboToken.h"; sourceTree = "<group>"; };
 		33AA20761EEEA09E0077D570 /* WBHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBHttpRequest.h; sourceTree = "<group>"; };
-		33AA20771EEEA09E0077D570 /* WeiboSDK+Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WeiboSDK+Statistics.h"; sourceTree = "<group>"; };
 		33AA20781EEEA09E0077D570 /* WeiboSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WeiboSDK.bundle; sourceTree = "<group>"; };
 		33AA20791EEEA09E0077D570 /* WeiboSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiboSDK.h; sourceTree = "<group>"; };
 		33AEC2701C7495AB00DBDA86 /* WechatAuthSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WechatAuthSDK.h; sourceTree = "<group>"; };
@@ -153,9 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				33AA20741EEEA09E0077D570 /* libWeiboSDK.a */,
-				33AA20751EEEA09E0077D570 /* WBHttpRequest+WeiboToken.h */,
 				33AA20761EEEA09E0077D570 /* WBHttpRequest.h */,
-				33AA20771EEEA09E0077D570 /* WeiboSDK+Statistics.h */,
 				33AA20781EEEA09E0077D570 /* WeiboSDK.bundle */,
 				33AA20791EEEA09E0077D570 /* WeiboSDK.h */,
 			);

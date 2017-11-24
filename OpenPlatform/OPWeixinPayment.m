@@ -93,7 +93,6 @@
     {
         NSLog(@"the prepay respones info%@",[[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding]);
     }
-    
     NSXMLParser *paprser = [[NSXMLParser alloc] initWithData:response];
     paprser.delegate = self;
     [paprser parse];

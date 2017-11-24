@@ -56,7 +56,7 @@ NS_CLASS_AVAILABLE_IOS(8_0)
 @end
 
 @class OPPaymentOrder;
-@class OPShareMedia;
+@protocol OPShareObject;
 @class OPAuthObject;
 
 NS_CLASS_AVAILABLE_IOS(8_0)
@@ -75,11 +75,11 @@ NS_CLASS_AVAILABLE_IOS(8_0)
              completed:(nullable void (^)(OPPlatformError errorCode,OPPaymentOrder *order)) completedBlock;
 
 -(void)shareWithType:(OPOpenShareType)shareType
-               media:(OPShareMedia *)media
-           completed:(nullable void (^)(OPPlatformError errorCode,OPOpenShareType,OPShareMedia *media)) completedBlock;
+               media:(id<OPShareObject>)media
+           completed:(nullable void (^)(OPPlatformError errorCode,OPOpenShareType,id<OPShareObject>)) completedBlock;
 
 -(void)authWithType:(OPOpenAuthType)authType
           completed:(nullable void (^)(OPPlatformError errorCode,OPAuthObject *auth)) completedBlock;
-
+-(nullable NSString *)installURLWithType:(OPOpenAuthType)type;
 @end
 NS_ASSUME_NONNULL_END

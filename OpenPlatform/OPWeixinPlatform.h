@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "WXApi.h"
-@class OPShareMedia;
+@protocol OPShareObject;
 @class OPAuthObject;
+NS_ASSUME_NONNULL_BEGIN
 @interface OPWeixinPlatform : NSObject<WXApiDelegate>
 @property(nonatomic,strong)NSString *appid;
 @property(nonatomic,strong)NSString *appkey;
--(void)shareWithMedia:(OPShareMedia *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger errorCode)) completedBlock;
+@property(strong,nullable,readonly)NSString * installURL;
+-(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger errorCode)) completedBlock;
 -(void)authCompleted:(void (^)(NSInteger errorCode,OPAuthObject *auth)) completedBlock;
 @end
+NS_ASSUME_NONNULL_END
