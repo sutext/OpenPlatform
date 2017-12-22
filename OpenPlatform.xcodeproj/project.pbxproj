@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3331189F1FCBB435004E2FD1 /* OPPlatformProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 3331189D1FCBB435004E2FD1 /* OPPlatformProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		333118A01FCBB435004E2FD1 /* OPPlatformProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 3331189E1FCBB435004E2FD1 /* OPPlatformProtocol.m */; };
 		3375F9B21F70B8C40033AA56 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375F9B11F70B8C40033AA56 /* AppDelegate.swift */; };
 		3375F9B41F70B8C40033AA56 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375F9B31F70B8C40033AA56 /* ViewController.swift */; };
 		3375F9B71F70B8C40033AA56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3375F9B51F70B8C40033AA56 /* Main.storyboard */; };
@@ -14,18 +16,14 @@
 		3375F9BC1F70B8C40033AA56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3375F9BA1F70B8C40033AA56 /* LaunchScreen.storyboard */; };
 		3375F9D21F70BE2A0033AA56 /* OpenPlatform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3375F9CB1F70BE2A0033AA56 /* OpenPlatform.framework */; };
 		3375F9D31F70BE2A0033AA56 /* OpenPlatform.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3375F9CB1F70BE2A0033AA56 /* OpenPlatform.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		3375F9D71F70BE920033AA56 /* OPAuthObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F899811BC4B01F00E86EA4 /* OPAuthObject.m */; };
 		3375F9D81F70BE920033AA56 /* OPShareMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F8997D1BC3D67400E86EA4 /* OPShareMedia.m */; };
-		3375F9D91F70BE920033AA56 /* OPPaymentOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F899C01BC65E9000E86EA4 /* OPPaymentOrder.m */; };
 		3375F9DA1F70BE920033AA56 /* OPWeixinPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F899851BC64A4C00E86EA4 /* OPWeixinPayment.m */; };
 		3375F9DB1F70BE920033AA56 /* OPAlipayPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F899891BC64A5E00E86EA4 /* OPAlipayPayment.m */; };
 		3375F9DC1F70BE920033AA56 /* OPOpenPlatform.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F899611BC3D20100E86EA4 /* OPOpenPlatform.m */; };
 		3375F9DD1F70BE920033AA56 /* OPTencentPlatform.m in Sources */ = {isa = PBXBuildFile; fileRef = 33CD2C531BCA595800618C9D /* OPTencentPlatform.m */; };
 		3375F9DE1F70BE920033AA56 /* OPWeixinPlatform.m in Sources */ = {isa = PBXBuildFile; fileRef = 33CD2C571BCA596900618C9D /* OPWeixinPlatform.m */; };
 		3375F9DF1F70BE920033AA56 /* OPWeiboPlatform.m in Sources */ = {isa = PBXBuildFile; fileRef = 33CD2C5B1BCA598000618C9D /* OPWeiboPlatform.m */; };
-		3375F9E01F70BEA20033AA56 /* OPAuthObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F899801BC4B01F00E86EA4 /* OPAuthObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3375F9E11F70BEA20033AA56 /* OPShareMedia.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F8997C1BC3D67400E86EA4 /* OPShareMedia.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3375F9E21F70BEA20033AA56 /* OPPaymentOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F899BF1BC65E9000E86EA4 /* OPPaymentOrder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3375F9E31F70BEA20033AA56 /* OPWeixinPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F899841BC64A4C00E86EA4 /* OPWeixinPayment.h */; };
 		3375F9E41F70BEA20033AA56 /* OPAlipayPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F899881BC64A5E00E86EA4 /* OPAlipayPayment.h */; };
 		3375F9E51F70BEA20033AA56 /* OPOpenPlatform.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F899601BC3D20100E86EA4 /* OPOpenPlatform.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -39,6 +37,9 @@
 		3375F9ED1F70BF800033AA56 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CD2C401BCA4D5900618C9D /* libsqlite3.0.tbd */; };
 		3375F9EE1F70BF990033AA56 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CD2C421BCA4D6D00618C9D /* libc++.tbd */; };
 		3375F9EF1F70BFAE0033AA56 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CD2C441BCA4DA600618C9D /* libz.tbd */; };
+		33A16A8C1FCCFB850013ADA4 /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 33A16A8A1FCCFB850013ADA4 /* AlipaySDK.bundle */; };
+		33A16A8D1FCCFB850013ADA4 /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A16A8B1FCCFB850013ADA4 /* AlipaySDK.framework */; };
+		33A16A8F1FCCFC710013ADA4 /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A16A8B1FCCFB850013ADA4 /* AlipaySDK.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3331189D1FCBB435004E2FD1 /* OPPlatformProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OPPlatformProtocol.h; sourceTree = "<group>"; };
+		3331189E1FCBB435004E2FD1 /* OPPlatformProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OPPlatformProtocol.m; sourceTree = "<group>"; };
 		3375F9AF1F70B8C40033AA56 /* packager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = packager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3375F9B11F70B8C40033AA56 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3375F9B31F70B8C40033AA56 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -75,6 +78,8 @@
 		3375F9BD1F70B8C40033AA56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3375F9CB1F70BE2A0033AA56 /* OpenPlatform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenPlatform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3398D7891C6203D000F8FDA8 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
+		33A16A8A1FCCFB850013ADA4 /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AlipaySDK.bundle; sourceTree = "<group>"; };
+		33A16A8B1FCCFB850013ADA4 /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlipaySDK.framework; sourceTree = "<group>"; };
 		33AA20741EEEA09E0077D570 /* libWeiboSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeiboSDK.a; sourceTree = "<group>"; };
 		33AA20761EEEA09E0077D570 /* WBHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBHttpRequest.h; sourceTree = "<group>"; };
 		33AA20781EEEA09E0077D570 /* WeiboSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WeiboSDK.bundle; sourceTree = "<group>"; };
@@ -96,8 +101,6 @@
 		33F899611BC3D20100E86EA4 /* OPOpenPlatform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOpenPlatform.m; sourceTree = "<group>"; };
 		33F8997C1BC3D67400E86EA4 /* OPShareMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPShareMedia.h; sourceTree = "<group>"; };
 		33F8997D1BC3D67400E86EA4 /* OPShareMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPShareMedia.m; sourceTree = "<group>"; };
-		33F899801BC4B01F00E86EA4 /* OPAuthObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPAuthObject.h; sourceTree = "<group>"; };
-		33F899811BC4B01F00E86EA4 /* OPAuthObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPAuthObject.m; sourceTree = "<group>"; };
 		33F899841BC64A4C00E86EA4 /* OPWeixinPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPWeixinPayment.h; sourceTree = "<group>"; };
 		33F899851BC64A4C00E86EA4 /* OPWeixinPayment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPWeixinPayment.m; sourceTree = "<group>"; };
 		33F899881BC64A5E00E86EA4 /* OPAlipayPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPAlipayPayment.h; sourceTree = "<group>"; };
@@ -105,8 +108,6 @@
 		33F8998E1BC64D8000E86EA4 /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
 		33F899A01BC64D8000E86EA4 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		33F899A11BC64D8000E86EA4 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
-		33F899BF1BC65E9000E86EA4 /* OPPaymentOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPPaymentOrder.h; sourceTree = "<group>"; };
-		33F899C01BC65E9000E86EA4 /* OPPaymentOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPPaymentOrder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +116,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3375F9D21F70BE2A0033AA56 /* OpenPlatform.framework in Frameworks */,
+				33A16A8D1FCCFB850013ADA4 /* AlipaySDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +124,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33A16A8F1FCCFC710013ADA4 /* AlipaySDK.framework in Frameworks */,
 				3375F9EF1F70BFAE0033AA56 /* libz.tbd in Frameworks */,
 				3375F9EE1F70BF990033AA56 /* libc++.tbd in Frameworks */,
 				3375F9ED1F70BF800033AA56 /* libsqlite3.0.tbd in Frameworks */,
@@ -147,6 +150,22 @@
 			path = packager;
 			sourceTree = "<group>";
 		};
+		33A16A891FCCFB850013ADA4 /* Alipay */ = {
+			isa = PBXGroup;
+			children = (
+				33A16A8A1FCCFB850013ADA4 /* AlipaySDK.bundle */,
+				33A16A8B1FCCFB850013ADA4 /* AlipaySDK.framework */,
+			);
+			path = Alipay;
+			sourceTree = "<group>";
+		};
+		33A16A8E1FCCFC710013ADA4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		33AA20731EEEA09E0077D570 /* WeiboSDK */ = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +184,7 @@
 				33F8998C1BC64D8000E86EA4 /* Library */,
 				3375F9B01F70B8C40033AA56 /* packager */,
 				33F8994D1BC3CAD000E86EA4 /* Products */,
+				33A16A8E1FCCFC710013ADA4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -190,18 +210,16 @@
 		33F899571BC3CC0200E86EA4 /* classes */ = {
 			isa = PBXGroup;
 			children = (
-				33F899801BC4B01F00E86EA4 /* OPAuthObject.h */,
-				33F899811BC4B01F00E86EA4 /* OPAuthObject.m */,
 				33F8997C1BC3D67400E86EA4 /* OPShareMedia.h */,
 				33F8997D1BC3D67400E86EA4 /* OPShareMedia.m */,
-				33F899BF1BC65E9000E86EA4 /* OPPaymentOrder.h */,
-				33F899C01BC65E9000E86EA4 /* OPPaymentOrder.m */,
 				33F899841BC64A4C00E86EA4 /* OPWeixinPayment.h */,
 				33F899851BC64A4C00E86EA4 /* OPWeixinPayment.m */,
 				33F899881BC64A5E00E86EA4 /* OPAlipayPayment.h */,
 				33F899891BC64A5E00E86EA4 /* OPAlipayPayment.m */,
 				33F899601BC3D20100E86EA4 /* OPOpenPlatform.h */,
 				33F899611BC3D20100E86EA4 /* OPOpenPlatform.m */,
+				3331189D1FCBB435004E2FD1 /* OPPlatformProtocol.h */,
+				3331189E1FCBB435004E2FD1 /* OPPlatformProtocol.m */,
 				33CD2C521BCA595800618C9D /* OPTencentPlatform.h */,
 				33CD2C531BCA595800618C9D /* OPTencentPlatform.m */,
 				33CD2C561BCA596900618C9D /* OPWeixinPlatform.h */,
@@ -215,6 +233,7 @@
 		33F8998C1BC64D8000E86EA4 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				33A16A891FCCFB850013ADA4 /* Alipay */,
 				33AA20731EEEA09E0077D570 /* WeiboSDK */,
 				33CD2C441BCA4DA600618C9D /* libz.tbd */,
 				33CD2C421BCA4D6D00618C9D /* libc++.tbd */,
@@ -254,8 +273,7 @@
 			files = (
 				3375F9E91F70BEA20033AA56 /* OpenPlatform.h in Headers */,
 				3375F9E11F70BEA20033AA56 /* OPShareMedia.h in Headers */,
-				3375F9E21F70BEA20033AA56 /* OPPaymentOrder.h in Headers */,
-				3375F9E01F70BEA20033AA56 /* OPAuthObject.h in Headers */,
+				3331189F1FCBB435004E2FD1 /* OPPlatformProtocol.h in Headers */,
 				3375F9E51F70BEA20033AA56 /* OPOpenPlatform.h in Headers */,
 				3375F9E31F70BEA20033AA56 /* OPWeixinPayment.h in Headers */,
 				3375F9E41F70BEA20033AA56 /* OPAlipayPayment.h in Headers */,
@@ -323,6 +341,7 @@
 					3375F9CA1F70BE2A0033AA56 = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = MMCHLPPBPU;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -353,6 +372,7 @@
 			files = (
 				3375F9BC1F70B8C40033AA56 /* LaunchScreen.storyboard in Resources */,
 				3375F9B91F70B8C40033AA56 /* Assets.xcassets in Resources */,
+				33A16A8C1FCCFB850013ADA4 /* AlipaySDK.bundle in Resources */,
 				3375F9B71F70B8C40033AA56 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -380,9 +400,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3375F9D71F70BE920033AA56 /* OPAuthObject.m in Sources */,
 				3375F9D81F70BE920033AA56 /* OPShareMedia.m in Sources */,
-				3375F9D91F70BE920033AA56 /* OPPaymentOrder.m in Sources */,
+				333118A01FCBB435004E2FD1 /* OPPlatformProtocol.m in Sources */,
 				3375F9DA1F70BE920033AA56 /* OPWeixinPayment.m in Sources */,
 				3375F9DB1F70BE920033AA56 /* OPAlipayPayment.m in Sources */,
 				3375F9DC1F70BE920033AA56 /* OPOpenPlatform.m in Sources */,
@@ -430,6 +449,10 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEVELOPMENT_TEAM = MMCHLPPBPU;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/Alipay",
+				);
 				INFOPLIST_FILE = packager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -449,6 +472,10 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEVELOPMENT_TEAM = MMCHLPPBPU;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/Alipay",
+				);
 				INFOPLIST_FILE = packager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -465,6 +492,7 @@
 				BITCODE_GENERATION_MODE = marker;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
@@ -475,11 +503,11 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/QQSDK",
+					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/Alipay",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					"ALLOW_WEIBO=1",
 				);
 				INFOPLIST_FILE = OpenPlatform/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -506,6 +534,7 @@
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
@@ -516,8 +545,9 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/QQSDK",
+					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)/Alipay",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS = "ALLOW_WEIBO=1";
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = OpenPlatform/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

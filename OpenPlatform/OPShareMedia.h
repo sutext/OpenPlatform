@@ -11,26 +11,26 @@
 #import <UIKit/UIKit.h>
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol OPShareObject<NSObject>
+@interface OPShareObject:NSObject
 @property(nonatomic,strong,nullable)NSString *title;
 @property(nonatomic,strong,nullable)NSString *content;
-@property(nonatomic,strong,nullable)UIImage  *image;
+@property(nonatomic,strong,nullable)UIImage  *thumb;
+@property(nonatomic,readonly,nullable)NSData *thumbData;
 @end
 
-@interface OPShareWebpage:NSObject<OPShareObject>
-@property(nonatomic,strong,nullable)NSString *title;
-@property(nonatomic,strong,nullable)NSString *content;
-@property(nonatomic,strong,nullable)UIImage  *image;
+@interface OPShareWebpage:OPShareObject
 @property(nonatomic,strong,nullable)NSString *weburl;
 @end
 
-@interface OPShareMusic:NSObject<OPShareObject>
-@property(nonatomic,strong,nullable)NSString *title;
-@property(nonatomic,strong,nullable)NSString *content;
-@property(nonatomic,strong,nullable)UIImage  *image;
+@interface OPShareMusic:OPShareObject
+@property(nonatomic,strong,nullable)NSString *weburl;
+@property(nonatomic,strong,nullable)NSString *dataURL;
 @property(nonatomic,strong,nullable)NSString *lowbandDataURL;
 @property(nonatomic,strong,nullable)NSString *lowbandURL;
-@property(nonatomic,strong,nullable)NSString *dataURL;
-@property(nonatomic,strong,nullable)NSString *webURL;
+@end
+
+@interface OPShareImage:OPShareObject
+@property(nonatomic,strong,nullable)UIImage  *image;
+@property(nonatomic,readonly,nullable)NSData *imageData;
 @end
 NS_ASSUME_NONNULL_END

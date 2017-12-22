@@ -7,40 +7,40 @@
 //
 
 #import <TencentOpenAPI/TencentOAuth.h>
+#import <TencentOpenAPI/QQApiInterface.h>
 #import "OPTencentPlatform.h"
 #import "OPOpenPlatform.h"
 #import "OPShareMedia.h"
-#import "OPAuthObject.h"
-@interface OPTencentPlatform()<TencentSessionDelegate>
+@interface OPTencentPlatform()<TencentSessionDelegate,QQApiInterfaceDelegate>
 @property(nonatomic,copy)void (^shareComplete)(NSInteger);
-@property(nonatomic,copy)void (^authComplete)(NSInteger,OPAuthObject *);
+@property(nonatomic,copy)void (^authComplete)(NSInteger,NSString *);
 @property(nonatomic,strong)TencentOAuth * tencent;
 @end
 @implementation OPTencentPlatform
 
-- (instancetype)initWithAppid:(NSString *)appid
+- (instancetype)initWithAppid:(NSString *)appid appkey:(NSString *)appkey
 {
     self = [super init];
     if (self) {
         self.tencent = [[TencentOAuth alloc] initWithAppId:appid andDelegate:self];
-       
+        self.appkey = appkey;
     }
     return self;
 }
--(void)authCompleted:(void (^)(NSInteger, OPAuthObject *))completedBlock
+-(void)authCompleted:(void (^)(NSInteger, NSString *))completedBlock
 {
-    if (![QQApiInterface isQQInstalled]) {
-        if (completedBlock) {
-            completedBlock(OPPlatformErrorNotInstall,nil);
-        }
-        return;
-    }
-    if (![QQApiInterface isQQSupportApi]) {
-        if (completedBlock) {
-            completedBlock(OPPlatformErrorUnsuport,nil);
-        }
-        return;
-    }
+//    if (![QQApiInterface isQQInstalled]) {
+//        if (completedBlock) {
+//            completedBlock(OPPlatformErrorNotInstall,nil);
+//        }
+//        return;
+//    }
+//    if (![QQApiInterface isQQSupportApi]) {
+//        if (completedBlock) {
+//            completedBlock(OPPlatformErrorUnsuport,nil);
+//        }
+//        return;
+//    }
     NSArray* permissions = [NSArray arrayWithObjects:
                             kOPEN_PERMISSION_GET_USER_INFO,
                             kOPEN_PERMISSION_GET_SIMPLE_USER_INFO,
@@ -62,11 +62,28 @@
 -(NSString *)installURL{
     return QQApiInterface.getQQInstallUrl;
 }
+-(BOOL)isInstalled{
+    return [QQApiInterface isQQInstalled];
+}
 -(BOOL)handleOpenURL:(NSURL *)url
 {
     return [TencentOAuth HandleOpenURL:url];
 }
--(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
+-(BOOL)open{
+    return [QQApiInterface openQQ];
+}
+-(BOOL)handelOpenURL:(NSURL *)openURL{
+    if([openURL.scheme hasPrefix:@"tencent"])
+    {
+        return [TencentOAuth HandleOpenURL:openURL];
+    }
+    if ([openURL.scheme hasPrefix:@"QQ"])
+    {
+        return [QQApiInterface handleOpenURL:openURL delegate:self];
+    }
+    return NO;
+}
+-(void)shareWithMedia:(OPShareObject *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
 {
     if (![QQApiInterface isQQInstalled]) {
         if (completedBlock) {
@@ -87,19 +104,27 @@
                                 initWithURL:[NSURL URLWithString:share.weburl]
                                 title:media.title
                                 description:media.content
-                                previewImageData:UIImageJPEGRepresentation(media.image, 1)
+                                previewImageData:media.thumbData
                                 targetContentType:QQApiURLTargetTypeNews];
         object = urlobj;
     }else if([media isKindOfClass:[OPShareMusic class]]) {
         OPShareMusic *share = (OPShareMusic *)media;
         QQApiAudioObject *music=[[QQApiAudioObject alloc]
-                                initWithURL:[NSURL URLWithString:share.webURL]
+                                initWithURL:[NSURL URLWithString:share.weburl]
                                 title:media.title
                                 description:media.content
-                                previewImageData:UIImageJPEGRepresentation(media.image, 1)
+                                previewImageData:media.thumbData
                                 targetContentType:QQApiURLTargetTypeAudio];
         music.flashURL = [NSURL URLWithString:share.dataURL];
         object = music;
+    }else if([media isKindOfClass:[OPShareImage class]]){
+        OPShareImage *share = (OPShareImage *)media;
+        QQApiImageObject *image = [[QQApiImageObject alloc]
+                                   initWithData:share.imageData
+                                   previewImageData:share.thumbData
+                                   title:share.title
+                                   description:share.content];
+        object = image;
     }
     
     QQApiSendResultCode code=0;
@@ -191,9 +216,7 @@
         
     {
         if (self.authComplete) {
-            OPAuthObject *user = [[OPAuthObject alloc] init];
-            user.token = self.tencent.accessToken;
-            self.authComplete(OPPlatformErrorSucceed, user);
+            self.authComplete(OPPlatformErrorSucceed, self.tencent.accessToken);
             self.authComplete=nil;
         }
     }

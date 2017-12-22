@@ -17,7 +17,6 @@ FOUNDATION_EXPORT const unsigned char OpenPlatformVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <OpenPlatform/PublicHeader.h>
 
 
-#import <OpenPlatform/OPAuthObject.h>
 #import <OpenPlatform/OPShareMedia.h>
-#import <OpenPlatform/OPPaymentOrder.h>
 #import <OpenPlatform/OPOpenPlatform.h>
+#import <OpenPlatform/OPPlatformProtocol.h>

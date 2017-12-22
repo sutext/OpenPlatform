@@ -9,96 +9,46 @@
 
 #import "OPOpenPlatform.h"
 #import "OPShareMedia.h"
-#import "OPAuthObject.h"
-#import "OPPaymentOrder.h"
 
 #import "OPWeixinPayment.h"
 #import "OPTencentPlatform.h"
 #import "OPWeixinPlatform.h"
 
-#ifdef ALLOW_ALIPAY
-#import <AlipaySDK/AlipaySDK.h>
 #import "OPAlipayPayment.h"
-#endif
-
-#ifdef ALLOW_WEIBO
 #import "OPWeiboPlatform.h"
-#endif
 @interface OPOpenPlatform()
-#ifdef ALLOW_ALIPAY
-@property(nonatomic,strong)OPAlipayPayment *alipay;
-#endif
-@property(nonatomic,strong)OPWeixinPayment *weixin;
 @property(nonatomic)BOOL  debugEnable;
+@property(nonatomic,strong)OPAlipayPayment   *alipay;
+@property(nonatomic,strong)OPWeixinPayment   *weipay;
 @property(nonatomic,strong)OPTencentPlatform *qqplatform;
-@property(nonatomic,strong)OPWeixinPlatform *wxplatform;
-#ifdef ALLOW_WEIBO
-@property(nonatomic,strong)OPWeiboPlatform  *wbplatform;
-#endif
-#ifdef ALLOW_ALIPAY
-#endif
+@property(nonatomic,strong)OPWeixinPlatform  *wxplatform;
+@property(nonatomic,strong)OPWeiboPlatform   *wbplatform;
 @end
 
 @implementation OPOpenPlatform
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-
-        self.weixin = [[OPWeixinPayment alloc] init];
-        self.wxplatform = [[OPWeixinPlatform alloc] init];
-#ifdef ALLOW_ALIPAY
-        self.alipay = [[OPAlipayPayment alloc] init];
-#endif
-#ifdef ALLOW_WEIBO
-        self.wbplatform = [[OPWeiboPlatform alloc] init];
-#endif
-        
-    }
-    return self;
+-(void)configAlipay:(NSString*)appid schema:(NSString *)schema{
+    self.alipay = [[OPAlipayPayment alloc] initWithAppid:appid schema:schema];
 }
--(void)configWechat:(OPPlatformConfig *)wechat
-{
-    self.weixin.appid           = wechat.appid;
-    self.weixin.signkey         = wechat.signkey;
-    self.weixin.partnerid       = wechat.partnerid;
-    self.wxplatform.appkey      = wechat.appkey;
-    self.wxplatform.appid       = wechat.appid;
-    
-    [WXApi registerApp:wechat.appid enableMTA:NO];
+-(void)configWechat:(NSString*)appid appkey:(NSString *)appkey{
+    self.wxplatform = [[OPWeixinPlatform alloc] initWithAppid:appid appkey:appkey];
+    self.weipay = [[OPWeixinPayment alloc] init];
 }
--(void)configTencent:(OPPlatformConfig *)tencent
-{
-    self.qqplatform = [[OPTencentPlatform alloc] initWithAppid:tencent.appid];
-    self.qqplatform.schema = tencent.schema;
+-(void)configWeibo:(NSString *)appid schema:(NSString *)schema redirectURI:(NSString *)redirectURI{
+    self.wbplatform = [[OPWeiboPlatform alloc] initWithAppid:appid schema:schema redirectURI:redirectURI];
 }
-
--(void)configAlipay:(OPPlatformConfig *)alipay
+-(void)configTencent:(NSString *)appid appkey:(NSString *)appkey
 {
-#ifdef ALLOW_ALIPAY
-    self.alipay.appid       = alipay.appid;
-    self.alipay.appkey      = alipay.appkey;
-    self.alipay.partnerid   = alipay.partnerid;
-    self.alipay.scheme      = alipay.schema;
-    self.alipay.sellerid    = alipay.sellerid;
-    self.alipay.signer      = [ETDecryptor decryptorWithPath:alipay.rsakeyPath passwd:alipayConfig.rsakeyPasswd];
-#endif
-}
--(void)configWeibo:(OPPlatformConfig *)weibo
-{
-#ifdef ALLOW_WEIBO
-    [WeiboSDK registerApp:weibo.appid];
-    self.wbplatform.redirectURI = weibo.redirectURI;
-    self.wbplatform.schema = weibo.schema;
-#endif
+    self.qqplatform = [[OPTencentPlatform alloc] initWithAppid:appid appkey:appkey];
 }
 -(void)setDebugEnable:(BOOL)enable
 {
     if (_debugEnable!=enable) {
         _debugEnable=enable;
     }
-    [WeiboSDK enableDebugMode:enable];
+    self.weipay.debugEnable = enable;
+    self.alipay.debugEnable = enable;
+    [self.wbplatform setDebugEnable:enable];
 }
 #pragma mark - - open interface
 -(BOOL)handleOpenURL:(NSURL *)url
@@ -107,81 +57,27 @@
     {
         NSLog(@"the callback openURL:\n%@",url);
     }
-#ifdef ALLOW_ALIPAY
     if ([url.host isEqualToString:@"safepay"])
     {
-        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
-            [self.alipay handlePamentResut:resultDic];
-        }];
-        return YES;
+        return [self.alipay handelOpenURL:url];
     }
-#endif
-    if ([url.scheme hasPrefix:self.weixin.appid]) {
+    if (self.wxplatform.appid&&[url.scheme hasPrefix:self.wxplatform.appid]) {
         if ([url.host hasPrefix:@"pay"]) {
-           [WXApi handleOpenURL:url delegate:self.weixin];
+            return  [self.weipay handelOpenURL:url];
         }
         else
         {
-            [WXApi handleOpenURL:url delegate:self.wxplatform];
+            return [self.wxplatform handelOpenURL:url];
         }
-        return YES;
     }
-#ifdef ALLOW_WEIBO
-    if ([url.scheme hasPrefix:self.wbplatform.schema])
+    if (self.wbplatform.schema&&[url.scheme hasPrefix:self.wbplatform.schema])
     {
-        return [WeiboSDK handleOpenURL:url delegate:self.wbplatform];
+        return [self.weibo handelOpenURL:url];
     }
-#endif
-    if([[url scheme] hasPrefix:@"tencent"])
-    {
-        return [self.qqplatform handleOpenURL:url];
-    }
-    if ([[url scheme] hasPrefix:@"QQ"]) {
-        return [QQApiInterface handleOpenURL:url delegate:self.qqplatform];
-    }
-    return NO;
+    return [self.qqplatform handelOpenURL:url];
 }
 
--(void)paymentWithType:(OPOpenPaymentType)payType order:(OPPaymentOrder *)order completed:(void (^)(OPPlatformError, OPPaymentOrder *))completedBlock
-{
-    if (self.debugEnable)
-    {
-        NSLog(@"the order info to be send%@",order);
-    }
-    switch (payType) {
-#ifdef ALLOW_ALIPAY
-        case OPOpenPaymentTypeAlipay:
-        {
-            [self.alipay payWithOrder:order completed:^(BOOL isok, OPPaymentOrder *aorder) {
-                if (completedBlock) {
-                    completedBlock(isok?OPPlatformErrorSucceed:OPPlatformErrorCancel,aorder);
-                }
-            }];
-            break;
-        }
-#endif
-        case OPOpenPaymentTypeWechat:
-        {
-            if (![WXApi isWXAppInstalled]) {
-                if (completedBlock) {
-                    completedBlock(OPPlatformErrorNotInstall,order);
-                }
-            }
-            else
-            {
-                [self.weixin payWithOrder:order completed:^(BOOL isok, OPPaymentOrder *aorder) {
-                    if (completedBlock) {
-                        completedBlock(isok?OPPlatformErrorSucceed:OPPlatformErrorCancel,aorder);
-                    }
-                }];
-            }
-            break;
-        }
-        default:
-            break;
-    }
-}
--(void)shareWithType:(OPOpenShareType)shareType media:(id<OPShareObject>)media completed:(void (^)(OPPlatformError, OPOpenShareType, id<OPShareObject> _Nonnull))completedBlock
+-(void)shareWithType:(OPOpenShareType)shareType media:(OPShareObject *)media completed:(void (^)(OPPlatformError, OPOpenShareType, OPShareObject * _Nonnull))completedBlock
 {
     switch (shareType) {
         case OPOpenShareTypeQQ:
@@ -220,7 +116,6 @@
             }];
             break;
         }
-#ifdef ALLOW_WEIBO
         case OPOpenShareTypeWeibo:
         {
             [self.wbplatform shareWithMedia:media redirectURI:self.wbplatform.redirectURI completed:^(NSInteger errorCode) {
@@ -231,75 +126,62 @@
             
             break;
         }
-#endif
         default:
             break;
     }
 }
 
--(void)authWithType:(OPOpenAuthType)authType completed:(void (^)(OPPlatformError, OPAuthObject *))completedBlock
+-(void)authWithType:(OPOpenAuthType)authType completed:(void (^)(OPPlatformError, NSString *))completedBlock
 {
     switch (authType) {
         case OPOpenAuthTypeQQ:
         {
-            [self.qqplatform authCompleted:^(NSInteger errorCode, OPAuthObject *auth) {
+            [self.qqplatform authCompleted:^(NSInteger errorCode, NSString *token) {
                 if (completedBlock) {
-                    completedBlock(errorCode,auth);
+                    completedBlock(errorCode,token);
                 }
             }];
         }
             break;
         case OPOpenAuthTypeWechat:
         {
-            [self.wxplatform authCompleted:^(NSInteger errorCode, OPAuthObject *auth) {
+            [self.wxplatform authCompleted:^(NSInteger errorCode, NSString *token) {
                 if (completedBlock) {
-                    completedBlock(errorCode,auth);
+                    completedBlock(errorCode,token);
                 }
             }];
             break;
         }
-#ifdef ALLOW_WEIBO
         case OPOpenAuthTypeWeibo:
         {
-            [self.wbplatform authCompleted:^(NSInteger errorCode, OPAuthObject *auth) {
+            [self.wbplatform authCompleted:^(NSInteger errorCode, NSString *token) {
                 if (completedBlock) {
-                    completedBlock(errorCode,auth);
+                    completedBlock(errorCode,token);
                 }
             }];
         }
             break;
-#endif
-#ifdef ALLOW_Alipay
-        case OPOpenAuthTypeAlipay:
+        case OPOpenAuthTypeAlipay:{
+            [self.alipay authCompleted:^(NSInteger errorCode, NSString *token) {
+                if (completedBlock) {
+                    completedBlock(errorCode,token);
+                }
+            }];
+        }
             
             break;
-#endif
         default:
             break;
     }
 }
--(NSString *)installURLWithType:(OPOpenAuthType)type{
-    switch (type) {
-        case OPOpenAuthTypeQQ:
-            return self.qqplatform.installURL;
-        case OPOpenAuthTypeWeibo:
-            return self.wbplatform.installURL;
-        case OPOpenAuthTypeWechat:
-            return self.wxplatform.installURL;
-        default:
-            break;
-    }
+-(id<OPPlatformProtocol>)qq{
+    return  self.qqplatform;
+}
+-(id<OPPlatformProtocol>)weibo{
+    return  self.wbplatform;
+}
+-(id<OPPlatformProtocol>)wechat{
+    return  self.wxplatform;
 }
 @end
-@implementation OPPlatformConfig
-- (instancetype)initWithAppid:(NSString *)appid appkey:(NSString *)appkey schema:(NSString *)schema
-{
-    self = [super init];
-    if (self) {
-        self.appid = appid;
-        self.appkey = appkey;
-        self.schema = schema;
-    }
-    return self;
-}
-@end
+

@@ -5,86 +5,84 @@
 //  Created by supertext on 15/10/8.
 //  Copyright © 2015年 icegent. All rights reserved.
 //
-#ifdef ALLOW_ALIPAY
 #import "OPAlipayPayment.h"
-#import "OPPaymentOrder.h"
 #import <AlipaySDK/AlipaySDK.h>
 @interface OPAlipayPayment()
-@property(nonatomic,copy)void (^completedBlock)(BOOL, OPPaymentOrder *);
-@property(nonatomic,strong)OPPaymentOrder *payingOrder;
+@property(nonatomic,copy)void (^finishBlock)(OPPaymentStatus);
 @property(nonatomic,strong)NSArray *orderKeys;
 @end
 @implementation OPAlipayPayment
--(NSArray *)orderKeys
+- (instancetype)initWithAppid:(NSString *)appid schema:(NSString *)schema
 {
-    if (!_orderKeys)
-    {
-        self.orderKeys=@[@"partner"         ,@"seller_id",
-                         @"out_trade_no"    ,@"subject",
-                         @"body"            ,@"total_fee",
-                         @"notify_url"      ,@"service",
-                         @"payment_type"    ,@"_input_charset",
-                         @"it_b_pay"        ,@"show_url",
-                         @"sign_date"       ,@"app_id",];
+    self = [super init];
+    if (self) {
+        self.appid = appid;
+        self.scheme = schema;
     }
-    return _orderKeys;
+    return self;
 }
--(void)payWithOrder:(OPPaymentOrder *)order completed:(void (^)(BOOL, OPPaymentOrder *))completedBlock
-{
-    self.completedBlock = completedBlock;
-    self.payingOrder = order;
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setValue:order.notifyurl           forKey:@"notify_url"];
-    [params setValue:order.subject             forKey:@"subject"];
-    [params setValue:order.productdesc         forKey:@"body"];
-    [params setValue:order.amount              forKey:@"total_fee"];
-    [params setValue:order.tradenumber         forKey:@"out_trade_no"];
-    [params setValue:self.partnerid            forKey:@"partner"];
-    [params setValue:self.sellerid             forKey:@"seller_id"];
-    [params setValue:@"mobile.securitypay.pay" forKey:@"service"];
-    [params setValue:@"1"                      forKey:@"payment_type"];
-    [params setValue:@"utf-8"                  forKey:@"_input_charset"];
-    [params setValue:@"30m"                    forKey:@"it_b_pay"];
-    [params setValue:@"m.alipay.com"           forKey:@"show_url"];
-    NSString *orderString = [self formatParams:params];
-    NSString *signedString = [[[self.signer signatureMessage:orderString] base64EncodedStringWithOptions:0] ETURLEncodedString];
-    NSString *result  = [NSString stringWithFormat:@"%@&sign=\"%@\"&sign_type=\"%@\"",orderString, signedString, @"RSA"];
-    [[AlipaySDK defaultService] payOrder:result fromScheme:self.scheme callback:^(NSDictionary *resultDic)
-    {
+-(void)paymentWithInfo:(OPPaymentInfo *)info finishBlock:(void (^)(OPPaymentStatus))finishBlock{
+    [[AlipaySDK defaultService] payOrder:info.sign fromScheme:self.scheme callback:^(NSDictionary *resultDic) {
         [self handlePamentResut:resultDic];
     }];
 }
-- (NSString *)formatParams:(NSDictionary *)params;
+-(BOOL)handelOpenURL:(NSURL *)openURL
 {
-    NSMutableString * discription = [NSMutableString string];
-    [self.orderKeys enumerateObjectsUsingBlock:^(NSString * key, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *value = [params objectForKey:key];
-        if (value) {
-            if (idx==0) {
-                [discription appendFormat:@"%@=\"%@\"",key,value];
-            }
-            else
-            {
-                [discription appendFormat:@"&%@=\"%@\"",key,value];
-            }
-        }
+    [[AlipaySDK defaultService] processOrderWithPaymentResult:openURL standbyCallback:^(NSDictionary *resultDic) {
+        [self handlePamentResut:resultDic];
     }];
-    return discription;
+    return YES;
+}
+-(BOOL)isInstalled{
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"alipay://"]];
+}
+-(NSString *)installURL{
+    return  nil;
+}
+-(BOOL)open{
+    return [UIApplication.sharedApplication openURL:[NSURL URLWithString:@"alipay://"]];
+}
+-(void)authCompleted:(void (^)(NSInteger, NSString *))completedBlock{
+
 }
 -(void)handlePamentResut:(NSDictionary *)result
 {
-    BOOL isok = NO;
-    if ([[result objectForKey:@"resultStatus"] doubleValue] == 9000) {
-        NSString *resultSting = [result objectForKey:@"result"];
-        if ([resultSting containsString:@"success=\"true\""]) {
-            isok = YES;
-        }
+    if (self.debugEnable) {
+        NSLog(@"result = %@",result);
     }
-    if (self.completedBlock) {
-        self.completedBlock(isok,self.payingOrder);
-        self.completedBlock = nil;
+    if (self.finishBlock){
+        NSInteger code = [[result objectForKey:@"resultStatus"] integerValue];
+        OPPaymentStatus status = OPPaymentStatusUnknown;
+        switch (code) {
+            case 9000:{
+                NSString *resultSting = [result objectForKey:@"result"];
+                if ([resultSting containsString:@"success=\"true\""]) {
+                    status = OPPaymentStatusSucceed;
+                }
+                break;
+            }
+            case 8000:{
+                status = OPPaymentStatusProcessing;
+                break;
+            }
+            case 4000:{
+                status = OPPaymentStatusFailed;
+                break;
+            }
+            case 6001:{
+                status  = OPPaymentStatusCancel;
+                break;
+            }
+            case 6002:{
+                status = OPPaymentStatusNetError;
+                break;
+            }
+            default:
+                break;
+        }
+        self.finishBlock(status);
+        self.finishBlock = nil;
     }
 }
 
 @end
-#endif

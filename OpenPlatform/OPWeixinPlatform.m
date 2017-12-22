@@ -9,13 +9,25 @@
 #import "OPWeixinPlatform.h"
 #import "OPOpenPlatform.h"
 #import "OPShareMedia.h"
-#import "OPAuthObject.h"
-@interface OPWeixinPlatform()
+#import "WXApi.h"
+@interface OPWeixinPlatform()<WXApiDelegate>
 @property(nonatomic,copy)void (^shareComplete)(NSInteger);
-@property(nonatomic,copy)void (^authComplete)(NSInteger,OPAuthObject *);
+@property(nonatomic,copy)void (^authComplete)(NSInteger,NSString *);
 @end
 @implementation OPWeixinPlatform
--(void)authCompleted:(void (^)(NSInteger, OPAuthObject *))completedBlock
+- (instancetype)initWithAppid:(NSString *)appid appkey:(NSString *)appkey
+{
+    self = [super init];
+    if (self) {
+        self.appkey      = appkey;
+        self.appid       = appid;
+        
+        [WXApi registerApp:appid enableMTA:NO];
+
+    }
+    return self;
+}
+-(void)authCompleted:(void (^)(NSInteger, NSString *))completedBlock
 {
     if (![WXApi isWXAppInstalled]) {
         if (completedBlock) {
@@ -35,7 +47,7 @@
     req.state = @"123";
     [WXApi sendReq:req];
 }
--(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
+-(void)shareWithMedia:(OPShareObject *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger))completedBlock
 {
     if (![WXApi isWXAppInstalled]) {
         if (completedBlock) {
@@ -52,20 +64,24 @@
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = media.title;
     message.description = media.content;
-    message.thumbData=UIImageJPEGRepresentation(media.image, 1);
+    message.thumbData=media.thumbData;
     if ([media isKindOfClass:[OPShareWebpage class]]){
         WXWebpageObject *webpage = [WXWebpageObject object];
         webpage.webpageUrl = ((OPShareWebpage *)media).weburl;
         message.mediaObject = webpage;
-        message.mediaObject = webpage;
     }else if([media isKindOfClass:[OPShareMusic class]]) {
         WXMusicObject *music = [WXMusicObject object];
         OPShareMusic *share = (OPShareMusic *)media;
-        music.musicUrl = share.webURL;
+        music.musicUrl = share.weburl;
         music.musicDataUrl = share.dataURL;
         music.musicLowBandUrl = share.lowbandURL;
         music.musicLowBandDataUrl = share.lowbandDataURL;
         message.mediaObject = music;
+    }else if ([media isKindOfClass:[OPShareImage class]]){
+        WXImageObject * image = [WXImageObject object];
+        OPShareImage *share = (OPShareImage *)media;
+        image.imageData = share.imageData;
+        message.mediaObject = image;
     }
     SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
     req.bText = NO;
@@ -85,6 +101,15 @@
 }
 -(NSString *)installURL{
     return WXApi.getWXAppInstallUrl;
+}
+-(BOOL)isInstalled{
+    return [WXApi isWXAppInstalled];
+}
+-(BOOL)handelOpenURL:(NSURL *)openURL{
+    return  [WXApi handleOpenURL:openURL delegate:self];
+}
+-(BOOL)open{
+    return [WXApi openWXApp];
 }
 #pragma mark - WXApiDelegate
 - (void)onReq:(BaseReq *)req
@@ -107,9 +132,7 @@
             SendAuthResp *authresp = (SendAuthResp *)resp;
             OPPlatformError errorCode = [self errorWithCode:authresp.errCode];
             if (errorCode==OPPlatformErrorSucceed) {
-                OPAuthObject *auth = [[OPAuthObject alloc] init];
-                auth.token = authresp.code;
-                self.authComplete(OPPlatformErrorSucceed,auth);
+                self.authComplete(OPPlatformErrorSucceed,authresp.code);
                 self.authComplete=nil;
             }
             else

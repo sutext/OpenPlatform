@@ -7,13 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WXApi.h"
+
+#import <OpenPlatform/OPPlatformProtocol.h>
 @class OPPaymentOrder;
-@interface OPWeixinPayment : NSObject<WXApiDelegate>
-@property(nonatomic,strong)NSString *appid;
-@property(nonatomic,strong)NSString *partnerid;
-@property(nonatomic,strong)NSString *signkey;
+@interface OPWeixinPayment : NSObject<OPPlatformPayment>
 @property(nonatomic)BOOL debugEnable;
--(void)payWithOrder:(OPPaymentOrder *)order
-          completed:(void (^)(BOOL isok,OPPaymentOrder *order)) completedBlock;
 @end

@@ -7,15 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WXApi.h"
-@protocol OPShareObject;
+#import <OpenPlatform/OPPlatformProtocol.h>
+
+@class OPShareObject;
 @class OPAuthObject;
 NS_ASSUME_NONNULL_BEGIN
-@interface OPWeixinPlatform : NSObject<WXApiDelegate>
+@interface OPWeixinPlatform : NSObject<OPPlatformProtocol>
+-(instancetype)initWithAppid:(NSString *)appid appkey:(NSString *)appkey;
 @property(nonatomic,strong)NSString *appid;
 @property(nonatomic,strong)NSString *appkey;
-@property(strong,nullable,readonly)NSString * installURL;
--(void)shareWithMedia:(id<OPShareObject>)media isChart:(BOOL)isChart completed:(void (^)(NSInteger errorCode)) completedBlock;
--(void)authCompleted:(void (^)(NSInteger errorCode,OPAuthObject *auth)) completedBlock;
+-(void)shareWithMedia:(OPShareObject *)media isChart:(BOOL)isChart completed:(void (^)(NSInteger errorCode)) completedBlock;
+-(void)authCompleted:(void (^)(NSInteger errorCode,NSString *token)) completedBlock;
 @end
 NS_ASSUME_NONNULL_END
