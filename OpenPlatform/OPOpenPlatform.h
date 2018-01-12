@@ -10,16 +10,6 @@
 #import <OpenPlatform/OPPlatformProtocol.h>
 
 NS_ASSUME_NONNULL_BEGIN
-typedef NS_ENUM(NSUInteger, OPPlatformError) {
-    OPPlatformErrorUnknown,
-    OPPlatformErrorSucceed,
-    OPPlatformErrorNetwork,
-    OPPlatformErrorCancel,
-    OPPlatformErrorRefuse,
-    OPPlatformErrorNotInstall,
-    OPPlatformErrorUnsuport,
-    OPPlatformErrorException,
-};
 
 typedef NS_ENUM(NSUInteger, OPOpenShareType) {
     OPOpenShareTypeQQ,
@@ -33,7 +23,6 @@ typedef NS_ENUM(NSUInteger, OPOpenAuthType) {
     OPOpenAuthTypeQQ,
     OPOpenAuthTypeWechat,
     OPOpenAuthTypeWeibo,
-    OPOpenAuthTypeAlipay,
 };
 
 @class OPShareObject;
@@ -52,6 +41,7 @@ NS_CLASS_AVAILABLE_IOS(8_0)
            completed:(nullable void (^)(OPPlatformError errorCode,OPOpenShareType,OPShareObject *)) completedBlock;
 -(void)authWithType:(OPOpenAuthType)authType
           completed:(nullable void (^)(OPPlatformError,NSString  * _Nullable )) completedBlock;
+
 @end
 
 @interface OPOpenPlatform(auth)
@@ -60,7 +50,7 @@ NS_CLASS_AVAILABLE_IOS(8_0)
 @property(nonatomic,strong,readonly)id<OPWeiboProtocol> weibo;
 @end
 @interface OPOpenPlatform(payment)
-@property(nonatomic,strong,readonly)id<OPPlatformPayment> alipay;
+@property(nonatomic,strong,readonly)id<OPAlipayProtocol> alipay;
 @property(nonatomic,strong,readonly)id<OPPlatformPayment> weipay;
 @end
 NS_ASSUME_NONNULL_END

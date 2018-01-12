@@ -8,12 +8,10 @@
 #import <Foundation/Foundation.h>
 #import <CoreMotion/CoreMotion.h>
 #import <OpenPlatform/OPPlatformProtocol.h>
-@class OPPaymentOrder;
-@interface OPAlipayPayment : NSObject<OPPlatformPayment>
+@interface OPAlipayPayment : NSObject<OPAlipayProtocol>
 -(instancetype)initWithAppid:(NSString *)appid schema:(NSString *)schema;
 @property(nonatomic,strong)NSString *scheme;
 @property(nonatomic,strong)NSString *appid;
 @property(nonatomic)BOOL debugEnable;
--(void)authCompleted:(void (^)(NSInteger errorCode,NSString *token)) completedBlock;
 @end
 

@@ -40,6 +40,11 @@
 -(BOOL)handelOpenURL:(NSURL *)openURL{
     return [WXApi handleOpenURL:openURL delegate:self];
 }
+
+- (BOOL)open {
+    return [WXApi openWXApp];
+}
+
 -(BOOL)isInstalled{
     return  [WXApi isWXAppInstalled];
 }

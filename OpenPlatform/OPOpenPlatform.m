@@ -161,15 +161,6 @@
             }];
         }
             break;
-        case OPOpenAuthTypeAlipay:{
-            [self.alipay authCompleted:^(NSInteger errorCode, NSString *token) {
-                if (completedBlock) {
-                    completedBlock(errorCode,token);
-                }
-            }];
-        }
-            
-            break;
         default:
             break;
     }

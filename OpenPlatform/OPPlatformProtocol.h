@@ -20,15 +20,26 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 typedef NS_ENUM(NSUInteger, OPPaymentStatus) {
-    OPPaymentStatusUnknown,
+    OPPaymentStatusOther,
     OPPaymentStatusFailed,
     OPPaymentStatusCancel,
     OPPaymentStatusRefuse,
+    OPPaymentStatusUnknown,
     OPPaymentStatusSucceed,
-    OPPaymentStatusNetError,
+    OPPaymentStatusNetwork,
     OPPaymentStatusUnsuport,
     OPPaymentStatusProcessing,
     OPPaymentStatusNotInstall,
+};
+typedef NS_ENUM(NSUInteger, OPPlatformError) {
+    OPPlatformErrorUnknown,
+    OPPlatformErrorSucceed,
+    OPPlatformErrorNetwork,
+    OPPlatformErrorCancel,
+    OPPlatformErrorRefuse,
+    OPPlatformErrorNotInstall,
+    OPPlatformErrorUnsuport,
+    OPPlatformErrorException,
 };
 @interface OPPaymentInfo:NSObject
 @property(nonatomic,strong,nullable)NSString * sign;
@@ -41,5 +52,8 @@ typedef NS_ENUM(NSUInteger, OPPaymentStatus) {
 @end
 @protocol OPPlatformPayment<OPPlatformProtocol>
 -(void)paymentWithInfo:(OPPaymentInfo *)info finishBlock:(nullable void (^)(OPPaymentStatus)) finishBlock;
+@end
+@protocol OPAlipayProtocol<OPPlatformPayment>
+-(void)authWithInfo:(NSString *)info finishBlock:(nullable void (^)(OPPlatformError,NSString  * _Nullable )) finishBlock;
 @end
 NS_ASSUME_NONNULL_END

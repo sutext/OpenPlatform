@@ -224,8 +224,8 @@
     {
         if (self.authComplete) {
             self.authComplete(OPPlatformErrorException, nil);
+            self.authComplete=nil;
         }
-        self.authComplete=nil;
     }
 }
 
@@ -237,8 +237,8 @@
             error = OPPlatformErrorCancel;
         }
         self.authComplete(error, nil);
+        self.authComplete=nil;
     }
-    self.authComplete=nil;
 }
 
 - (void)tencentDidNotNetWork
